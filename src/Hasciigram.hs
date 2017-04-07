@@ -1,33 +1,41 @@
 module Hasciigram where
 
-histogram :: (Show s, Integral a, Ord a, Show a) => [(s, a)] -> IO ()
+histogram :: Show s => [(s, Integer)] -> IO ()
 histogram bins = do
-  let longestName = maximum $ map (length . show . fst) bins
-      largestValue = maximum $ map snd bins
-  histogram' bins longestName largestValue
+  let longestNameLen = maximum $ map (length . show . fst) bins
+      largestValue   = maximum $ map snd bins
+  histogram' bins longestNameLen largestValue
 
-histogram' :: (Show s, Integral a, Ord a, Show a) => [(s, a)] -> Int -> a -> IO ()
-histogram' bins longestName largestValue = do
-  let normalised = normaliseBins bins largestValue
-  printBins normalised longestName largestValue
+histogram' :: Show s => [(s, Integer)] -> Int -> Integer -> IO ()
+histogram' bins longestNameLen largestValue = do
+  let maxBlocks = 79 - longestNameLen
+      normalised = normaliseBins bins largestValue maxBlocks
+  printBins normalised longestNameLen
 
-normaliseBins bins v = bins
+normaliseBins :: [(s, Integer)] -> Integer -> Int -> [(s, Integer)]
+normaliseBins [] _ _ = []
+normaliseBins bins largestValue maxBlocks =
+  map (normaliseBin largestValue maxBlocks) bins
 
-printBins :: (Show s, Integral a, Ord a, Show a) => [(s, a)] -> Int -> a -> IO ()
-printBins (b:bins) longestName largestValue  = do
-  -- not 80, but 79, because we reserve one for delimiter
-  let binValueLength = 79 - longestName
+normaliseBin :: Integer -> Int -> (s, Integer) -> (s, Integer)
+normaliseBin largestValue maxBlocks (binName, binValue) =
+  (binName, v) where
+    lv = fromInteger largestValue
+    bv = fromInteger binValue
+    blockSize = bv / lv
+    value = blockSize * (fromInteger (toInteger maxBlocks))
+    v = floor value
+
+printBins :: Show s => [(s, Integer)] -> Int -> IO ()
+printBins (b:bins) longestNameLen  = do
 
   let name     = (show . fst) b
       namelen  = length name
-      binName  = name ++ (replicate (longestName - namelen) ' ') ++ "|"
+      binName  = name ++ (replicate (longestNameLen - namelen) ' ') ++ "|"
 
-  let value    = normaliseValue (snd b) largestValue
+  let value    = fromIntegral $ snd b
       binValue = replicate value '█'
 
   putStrLn $ binName ++ binValue
-  printBins bins longestName largestValue
-printBins [] _ _ = putStrLn ""
-
-normaliseValue :: Integral a => a -> a -> Int
-normaliseValue n max =  fromIntegral n
+  printBins bins longestNameLen
+printBins [] _ = putStrLn ""
