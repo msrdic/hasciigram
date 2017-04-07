@@ -31,7 +31,7 @@ printBins (b:bins) longestNameLen  = do
 
   let name     = (show . fst) b
       namelen  = length name
-      binName  = name ++ (replicate (longestNameLen - namelen) ' ') ++ "|"
+      binName  = name ++ (replicate (longestNameLen - namelen) ' ') ++ "│"
 
   let value    = fromIntegral $ snd b
       binValue = replicate value '█'
