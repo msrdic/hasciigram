@@ -1,4 +1,4 @@
-module Hasciigram where
+module Hasciigram (histogram) where
 
 histogram :: Show s => [(s, Integer)] -> IO ()
 histogram bins = do
