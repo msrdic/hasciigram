@@ -27,15 +27,13 @@ normaliseBin largestValue maxBlocks (binName, binValue) =
     v = floor value
 
 printBins :: Show s => [(s, Integer)] -> Int -> IO ()
+printBins [] _ = putStrLn ""
 printBins (b:bins) longestNameLen  = do
-
   let name     = (show . fst) b
       namelen  = length name
       binName  = name ++ (replicate (longestNameLen - namelen) ' ') ++ "│"
-
-  let value    = fromIntegral $ snd b
+      value    = fromIntegral $ snd b
       binValue = replicate value '█'
 
   putStrLn $ binName ++ binValue
   printBins bins longestNameLen
-printBins [] _ = putStrLn ""
