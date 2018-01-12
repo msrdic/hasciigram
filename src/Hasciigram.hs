@@ -50,7 +50,7 @@ preciseBinValue v
   | v == 5 = fiveEights
   | v == 6 = threeQuarters
   | v == 7 = sevenEights
-  | otherwise = concat (replicate (fromInteger (v `div` 8)) full) ++ preciseBinValue (v `mod` 8) ++ show (v `div` 8) ++ "," ++ show (v `mod` 8)
+  | otherwise = concat (replicate (fromInteger (v `div` 8)) full) ++ preciseBinValue (v `mod` 8)
 
 full = "█"
 sevenEights = "\x2589"
