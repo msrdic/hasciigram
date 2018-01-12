@@ -37,7 +37,7 @@ printBins (b:bins) longestNameLen  = do
     binName  = name ++ replicate (longestNameLen - namelen) ' ' ++ "│"
     value    = fromIntegral $ snd b
     binValue = preciseBinValue value
-  putStrLn $ binName ++ binValue
+  putStrLn $ binName ++ binValue ++ " [" ++ show value ++ "]"
   printBins bins longestNameLen
 
 preciseBinValue :: Integer -> String
